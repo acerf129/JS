@@ -1,0 +1,29 @@
+openssl genrsa -out yourApp.key 1024
+
+openssl req -new -key yourApp.key -out yourApp.csr
+
+#buy one for externak website Symantec/VeriSign 
+/usr/bin/ssl/yourAppSigned.crt
+
+#Apache setup# /httpd.conf
+<VirtualHost *443>
+DocumentRoot "/path/to/your/app/htdocs"
+ServerName yourApp.com
+SSLEngine on
+SSLCertificateFile /usr/bin/ssl/yourAppSigned.crt
+SSLCertificateKeyFile /usr/bin/ssl/yourApp.key
+</VirtualHost>
+#and then command
+apachectrl restart
+
+#Nginx setrup#
+server{
+    listen 443;
+    server_name yourApp.com;
+    location /{
+        root /path/to/your/app/htdocs
+    }
+    ssl on;
+    ssl_certificate /usr/bin/ssl/yourAppSigned.crt
+    ssl_certificatekey /usr/bin/ssl/yourApp.key
+}
